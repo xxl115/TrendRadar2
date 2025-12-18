@@ -1,11 +1,11 @@
 {
-  "generated_at": "2025-12-18T14:42:17.852267+08:00",
-  "total_titles_processed": 1208,
+  "generated_at": "2025-12-18T15:28:40.757632+08:00",
+  "total_titles_processed": 1306,
   "failed_sources": [],
   "trends": [
     {
       "keyword_group": "特朗普",
-      "match_count": 39,
+      "match_count": 41,
       "titles": [
         {
           "title": "特朗普称委内瑞拉政府“外国恐怖组织”，21世纪再现“大棒加胡萝卜”",
@@ -17,11 +17,12 @@
             9,
             7,
             5,
-            4
+            4,
+            3
           ],
           "is_new": false,
-          "appearance_count": 19,
-          "time_info": "[00时35分 ~ 14时42分]"
+          "appearance_count": 20,
+          "time_info": "[00时35分 ~ 15时28分]"
         },
         {
           "title": "特朗普有“酒鬼性格”，万斯“阴谋论者”，马斯克“嗑药的怪人”...“白宫大管家”的炸裂采访爆了",
@@ -57,8 +58,23 @@
             8
           ],
           "is_new": false,
+          "appearance_count": 8,
+          "time_info": "[07时26分 ~ 15时28分]"
+        },
+        {
+          "title": "特朗普对马杜罗下狠手",
+          "url": "https://www.baidu.com/s?wd=%E7%89%B9%E6%9C%97%E6%99%AE%E5%AF%B9%E9%A9%AC%E6%9D%9C%E7%BD%97%E4%B8%8B%E7%8B%A0%E6%89%8B",
+          "source": "百度热搜",
+          "ranks": [
+            23,
+            17,
+            21,
+            19,
+            24
+          ],
+          "is_new": false,
           "appearance_count": 7,
-          "time_info": "[07时26分 ~ 14时42分]"
+          "time_info": "[10时02分 ~ 15时28分]"
         },
         {
           "title": "市场消息：特朗普被律师告知，关于第三个总统任期的宪法合法性尚不明确。",
@@ -83,21 +99,6 @@
           "is_new": false,
           "appearance_count": 4,
           "time_info": "[06时25分 ~ 07时26分]"
-        },
-        {
-          "title": "特朗普对马杜罗下狠手",
-          "url": "https://www.baidu.com/s?wd=%E7%89%B9%E6%9C%97%E6%99%AE%E5%AF%B9%E9%A9%AC%E6%9D%9C%E7%BD%97%E4%B8%8B%E7%8B%A0%E6%89%8B",
-          "source": "百度热搜",
-          "ranks": [
-            23,
-            17,
-            21,
-            19,
-            24
-          ],
-          "is_new": false,
-          "appearance_count": 6,
-          "time_info": "[10时02分 ~ 14时42分]"
         },
         {
           "title": "据悉特朗普希望渐进式施压让马杜罗低头，最终目标仍然让其下台",
@@ -254,6 +255,17 @@
           "time_info": "[13时29分 ~ 13时30分]"
         },
         {
+          "title": "特朗普全国讲话未提及委内瑞拉",
+          "url": "https://news.ifeng.com/c/8pBVKVnZZtZ",
+          "source": "凤凰网",
+          "ranks": [
+            6
+          ],
+          "is_new": true,
+          "appearance_count": 1,
+          "time_info": "15时28分"
+        },
+        {
           "title": "联邦上诉法院暂允特朗普在华盛顿保留国民警卫队部署",
           "url": "https://flash.jin10.com/detail/20251218010257604800",
           "source": "金十数据",
@@ -263,6 +275,17 @@
           "is_new": false,
           "appearance_count": 1,
           "time_info": "01时28分"
+        },
+        {
+          "title": "特朗普：我接手了一个烂摊子",
+          "url": "https://www.toutiao.com/trending/7584554052525080639/",
+          "source": "今日头条",
+          "ranks": [
+            8
+          ],
+          "is_new": true,
+          "appearance_count": 1,
+          "time_info": "15时28分"
         },
         {
           "title": "桥水基金创始人达利欧：达利欧慈善基金会将支持为儿童设立的“特朗普账户”（Trump Accounts for Children）。",
@@ -403,7 +426,7 @@
           "ranks": [
             18
           ],
-          "is_new": true,
+          "is_new": false,
           "appearance_count": 1,
           "time_info": "14时42分"
         },
@@ -478,8 +501,8 @@
             1
           ],
           "is_new": false,
-          "appearance_count": 11,
-          "time_info": "[06时25分 ~ 14时42分]"
+          "appearance_count": 12,
+          "time_info": "[06时25分 ~ 15时28分]"
         },
         {
           "title": "美股收盘：甲骨文带崩大盘 三大指数齐跌 纳指跌近2%",
@@ -681,11 +704,12 @@
             10,
             8,
             7,
-            9
+            9,
+            6
           ],
           "is_new": false,
-          "appearance_count": 6,
-          "time_info": "[10时02分 ~ 14时42分]"
+          "appearance_count": 7,
+          "time_info": "[10时02分 ~ 15时28分]"
         },
         {
           "title": "美股七巨头收盘播报｜特斯拉收跌超4.6%撤离历史最高位，英伟达跌3.8%，谷歌A跌3.2%",
@@ -750,6 +774,18 @@
           "time_info": "[11时58分 ~ 12时41分]"
         },
         {
+          "title": "谷歌发布 Gemini 3 Flash，相比上一代 2.5 Flash 有哪些提升？使用体验如何？",
+          "url": "https://www.zhihu.com/question/1984788546771517931",
+          "source": "知乎",
+          "ranks": [
+            16,
+            14
+          ],
+          "is_new": false,
+          "appearance_count": 2,
+          "time_info": "[14时42分 ~ 15时28分]"
+        },
+        {
           "title": "谷歌：推出 Gemini 3 Flash扩展Gemini 3模型系列。",
           "url": "https://flash.jin10.com/detail/20251218000152068800",
           "source": "金十数据",
@@ -759,17 +795,6 @@
           "is_new": false,
           "appearance_count": 1,
           "time_info": "00时35分"
-        },
-        {
-          "title": "谷歌发布 Gemini 3 Flash，相比上一代 2.5 Flash 有哪些提升？使用体验如何？",
-          "url": "https://www.zhihu.com/question/1984788546771517931",
-          "source": "知乎",
-          "ranks": [
-            16
-          ],
-          "is_new": true,
-          "appearance_count": 1,
-          "time_info": "14时42分"
         },
         {
           "title": "白银成全球第四大资产 市值超越谷歌",
@@ -795,20 +820,21 @@
           "ranks": [
             5
           ],
-          "is_new": true,
-          "appearance_count": 1,
-          "time_info": "14时42分"
+          "is_new": false,
+          "appearance_count": 2,
+          "time_info": "[14时42分 ~ 15时28分]"
         },
         {
           "title": "AI新子弹要来了！报道称OpenAI正探讨“数百亿甚至1000亿美元融资”",
           "url": "https://wallstreetcn.com/articles/3761607",
           "source": "华尔街见闻",
           "ranks": [
-            8
+            8,
+            6
           ],
-          "is_new": true,
-          "appearance_count": 1,
-          "time_info": "14时42分"
+          "is_new": false,
+          "appearance_count": 2,
+          "time_info": "[14时42分 ~ 15时28分]"
         },
         {
           "title": "OpenAI董事长布雷特·泰勒表示，该公司的发展受限于算力资源的获取。",
