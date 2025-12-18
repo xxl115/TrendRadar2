@@ -1,15 +1,42 @@
-name: Hot News Crawler
+name: Get Hot News
+
 on:
   schedule:
-    # ⚠️ 重要提示：我们使用的是 GitHub 官方提供的资源来进行的推送，而每个账号的资源是限额的
-    # 为了不被官方判定为滥用而面临封号的风险，不建议设置比半小时更短的执行间隔
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # ⚠️ 试用版说明 / Trial Mode
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     #
-    # Cron 表达式示例（注意：GitHub Actions 使用 UTC 时间，北京时间需要减 8 小时）:
-    # - "0 * * * *"         # 每小时整点运行一次（实际有偏差）
-    # - "*/30 * * * *"      # 每 30 分钟执行一次
-    # - "*/30 0-14 * * *"   # 每天 UTC 0:00-14:00（北京时间 8:00-22:00），每 30 分钟运行一次
-    # - "0 0,6,12,18 * * *" # 每天 UTC 0:00,6:00,12:00,18:00（北京时间 8:00,14:00,20:00,次日2:00）
-    - cron: "0 * * * *"
+    # 🔄 运行机制 / How it works:
+    #    - 每个周期为 7 天，届时自动停止
+    #    - 运行 "Check In" 会重置周期（重新开始 7 天倒计时，而非累加）
+    #    - Each cycle is 7 days, then auto-stops
+    #    - "Check In" resets the cycle (restarts 7-day countdown, not cumulative)
+    #
+    # 💡 设计初衷 / Why this design:
+    #    如果 7 天都忘了签到，或许这些资讯对你来说并非刚需
+    #    适时的暂停，能帮你从信息流中抽离，给大脑留出喘息的空间
+    #    If you forget for 7 days, maybe you don't really need it
+    #    A timely pause helps you detach from the stream and gives your mind space
+    #
+    # 🙏 珍惜资源 / Respect shared resources:
+    #    GitHub Actions 是平台提供的公共资源，每次运行都会消耗算力
+    #    签到机制确保资源分配给真正需要的用户，感谢你的理解与配合
+    #    GitHub Actions is a shared public resource provided by the platform
+    #    Check-in ensures resources go to those who truly need it — thank you
+    #
+    # 🚀 长期使用请部署 Docker 版本 / For long-term use, deploy Docker version
+    #
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    #
+    # 📝 修改运行时间：只改第一个数字（0-59），表示每小时第几分钟运行
+    # 📝 Change time: Only modify the first number (0-59) = minute of each hour
+    #
+    # 示例 / Examples:
+    #   "15 * * * *"     → 每小时第15分钟 / minute 15 every hour
+    #   "30 0-14 * * *"  → 北京时间 8:00-22:00 每小时第30分钟 / Beijing 8am-10pm
+    #
+    - cron: "33 * * * *"
+
   workflow_dispatch:
 
 concurrency:
@@ -17,46 +44,96 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
+  contents: read
+  actions: write
 
 jobs:
   crawl:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
-    
+    timeout-minutes: 15
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
           clean: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-          
+
+      - name: Check Expiration
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          WORKFLOW_FILE="crawler.yml"
+          API_URL="repos/${{ github.repository }}/actions/workflows/$WORKFLOW_FILE/runs"
+
+          TOTAL=$(gh api "$API_URL" --jq '.total_count')
+          if [ -z "$TOTAL" ] || [ "$TOTAL" -eq 0 ]; then
+            echo "No previous runs found, skipping expiration check"
+            exit 0
+          fi
+
+          LAST_PAGE=$(( (TOTAL + 99) / 100 ))
+          FIRST_RUN_DATE=$(gh api "$API_URL?per_page=100&page=$LAST_PAGE" --jq '.workflow_runs[-1].created_at')
+
+          if [ -n "$FIRST_RUN_DATE" ]; then
+            CURRENT_TIMESTAMP=$(date +%s)
+            FIRST_RUN_TIMESTAMP=$(date -d "$FIRST_RUN_DATE" +%s)
+            DIFF_SECONDS=$((CURRENT_TIMESTAMP - FIRST_RUN_TIMESTAMP))
+            LIMIT_SECONDS=604800
+
+            if [ $DIFF_SECONDS -gt $LIMIT_SECONDS ]; then
+              echo "⚠️ 试用期已结束，请运行 'Check In' 签到续期"
+              echo "⚠️ Trial expired. Run 'Check In' to renew."
+              gh workflow disable "$WORKFLOW_FILE"
+              exit 1
+            else
+              DAYS_LEFT=$(( (LIMIT_SECONDS - DIFF_SECONDS) / 86400 ))
+              echo "✅ 试用期剩余 ${DAYS_LEFT} 天，到期前请运行 'Check In' 签到续期"
+              echo "✅ Trial: ${DAYS_LEFT} days left. Run 'Check In' before expiry to renew."
+            fi
+          fi
+
+
+      # --------------------------------------------------------------------------------
+      # 🚦 TRAFFIC CONTROL / 流量控制
+      # --------------------------------------------------------------------------------
+      # EN: Generates a random delay between 1 and 300 seconds (5 minutes).
+      #     Critical for load balancing.
+      #
+      # CN: 生成 1 到 300 秒（5分钟）之间的随机延迟。
+      #     这对负载均衡至关重要。
+      - name: Random Delay (Traffic Control)
+        if: success()
+        run: |
+          echo "🎲 Traffic Control: Generating random delay..."
+          DELAY=$(( ( RANDOM % 300 )  + 1 ))
+          echo "⏸️  Sleeping for ${DELAY} seconds to spread the load..."
+          sleep ${DELAY}s
+          echo "▶️  Delay finished. Starting crawler..."
+
       - name: Set up Python
+        if: success()
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
-          cache: 'pip'
-          
+          cache: "pip"
+
       - name: Install dependencies
+        if: success()
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          
+
       - name: Verify required files
+        if: success()
         run: |
-          echo "🔍 检查必需的配置文件..."
           if [ ! -f config/config.yaml ]; then
-            echo "❌ 错误: config/config.yaml 文件不存在"
+            echo "Error: Config missing"
             exit 1
           fi
-          if [ ! -f config/frequency_words.txt ]; then
-            echo "❌ 错误: config/frequency_words.txt 文件不存在"
-            exit 1
-          fi
-          echo "✅ 配置文件检查通过"
-          
+
       - name: Run crawler
+        if: success()
         env:
           FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
@@ -74,36 +151,13 @@ jobs:
           NTFY_TOKEN: ${{ secrets.NTFY_TOKEN }}
           BARK_URL: ${{ secrets.BARK_URL }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          STORAGE_BACKEND: auto
+          LOCAL_RETENTION_DAYS: ${{ secrets.LOCAL_RETENTION_DAYS }}
+          REMOTE_RETENTION_DAYS: ${{ secrets.REMOTE_RETENTION_DAYS }}
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+          S3_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY_ID }}
+          S3_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_ACCESS_KEY }}
+          S3_ENDPOINT_URL: ${{ secrets.S3_ENDPOINT_URL }}
+          S3_REGION: ${{ secrets.S3_REGION }}
           GITHUB_ACTIONS: true
-        run: python main.py
-        
-      - name: Commit and push if changes
-        env:
-          BRANCH_NAME: ${{ github.event.repository.default_branch }}
-        run: |
-          git config --global user.name 'GitHub Actions'
-          git config --global user.email 'actions@github.com'
-          
-          git add -A
-          
-          if git diff --quiet && git diff --staged --quiet; then
-            echo "📭 No changes to commit"
-            exit 0
-          fi
-          
-          echo "📝 Committing changes..."
-          TIMESTAMP=$(TZ=Asia/Shanghai date "+%Y-%m-%d %H:%M:%S")
-          git commit -m "Auto update by GitHub Actions at $TIMESTAMP"
-          
-          echo "⬆️ Pushing changes with retry..."
-          for i in {1..5}; do
-            git pull --rebase origin $BRANCH_NAME && git push origin $BRANCH_NAME && {
-              echo "✅ Successfully pushed on attempt $i"
-              exit 0
-            }
-            echo "⚠️ Attempt $i failed, waiting $((i*5)) seconds..."
-            sleep $((i * 5))
-          done
-          
-          echo "❌ Failed to push after 5 attempts"
-          exit 1
+        run: python -m trendradar
